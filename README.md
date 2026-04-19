@@ -2,7 +2,11 @@
 
 ChainTasks is a premium, personal on-chain todo list where tasks are stored immutably on the Stellar blockchain. Built with Rust-based Soroban smart contracts and a sleek, modern React frontend, it offers a seamless Web3 experience with optimistic UI updates and persistent offline caching.
 
-![Main Dashboard](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585867143.png)
+## 📺 Project Demo
+
+https://github.com/saasflare-online/chaintasks/assets/demo.mov
+
+![Main Dashboard](assets/dashboard.png)
 
 ## 🚀 Key Features
 
@@ -31,10 +35,10 @@ ChainTasks is a premium, personal on-chain todo list where tasks are stored immu
 ## 📸 Screenshots
 
 ### Wallet Connection
-![Wallet Gate](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585867177.png)
+![Wallet Gate](assets/wallet.png)
 
 ### Real-Time Syncing
-![Syncing](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585524480.png)
+![Syncing](assets/syncing.png)
 
 ## 📦 Getting Started
 
