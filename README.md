@@ -46,6 +46,9 @@ ChainTasks is a premium, personal on-chain todo list where tasks are stored immu
 ### Real-Time Syncing
 ![Syncing](assets/syncing.png)
 
+### Automated Test Suite
+![Tests Passing](assets/tests.png)
+
 ## 📦 Getting Started
 
 ### Prerequisites
