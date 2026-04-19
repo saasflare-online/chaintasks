@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { isConnected, getPublicKey } from '@stellar/freighter-api';
+import { isConnected, requestAccess, getAddress } from '@stellar/freighter-api';
 
 interface StellarContextType {
   address: string | null;
@@ -15,16 +15,26 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
 
   const connect = async () => {
     try {
-      if (await isConnected()) {
-        const publicKey = await getPublicKey();
-        if (publicKey) {
-          setAddress(publicKey);
+      console.log('Connecting to Freighter...');
+      
+      const connectionStatus = await isConnected();
+      if (connectionStatus && connectionStatus.isConnected) {
+        // requestAccess() prompts for permission if not already granted
+        const access = await requestAccess();
+        
+        if (access && access.address) {
+          setAddress(access.address);
+          console.log('Connected with:', access.address);
+        } else if (access && access.error) {
+          console.error('Access requested failed:', access.error);
+          alert(`Freighter Error: ${access.error}`);
         }
       } else {
-        alert('Please install Freighter wallet');
+        alert('Freighter wallet not found or locked. Please open the extension.');
       }
     } catch (error) {
       console.error('Connection failed:', error);
+      alert('Failed to connect to Freighter. Please ensure it is installed and unlocked.');
     }
   };
 
@@ -33,12 +43,19 @@ export function StellarProvider({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    // Check if already connected
     const checkConnection = async () => {
-        if (await isConnected()) {
-            // We don't auto-fetch public key for privacy unless needed, 
-            // but for a dApp it's common to show the address if already allowed.
+      try {
+        const connectionStatus = await isConnected();
+        if (connectionStatus && connectionStatus.isConnected) {
+          // getAddress only returns if already allowed, won't prompt
+          const activeAddress = await getAddress();
+          if (activeAddress && activeAddress.address) {
+            setAddress(activeAddress.address);
+          }
         }
+      } catch (e) {
+        console.error('Auto-connect check failed', e);
+      }
     };
     checkConnection();
   }, []);

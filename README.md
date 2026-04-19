@@ -1,91 +1,75 @@
-# 🚀 ChainTasks x Stellar (Soroban)
+# ChainTasks x Stellar (Soroban)
 
-ChainTasks is a premium, personal todo list where tasks are stored immutably on the **Stellar Network** using **Soroban** smart contracts. Optimized for speed with IndexedDB and integrated with the **Freighter Wallet**.
+ChainTasks is a premium, personal on-chain todo list where tasks are stored immutably on the Stellar blockchain. Built with Rust-based Soroban smart contracts and a sleek, modern React frontend, it offers a seamless Web3 experience with optimistic UI updates and persistent offline caching.
 
-## 🔴 The Problem
-Traditional todo lists are fragile and centralized. They lack true ownership and permanent history.
+![Main Dashboard](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585867143.png)
 
-## 🟢 The Solution
-**ChainTasks** leverage Stellar's efficient smart contract platform (Soroban) to provide:
-- **Immutability**: Tasks are stored on Stellar Testnet permanently.
-- **Ownership**: Your tasks are tied to your Stellar Public Key.
-- **Performance**: Instant UI updates via **Dexie.js** caching.
-- **Low Cost**: Ultra-low transaction fees on the Stellar network.
+## 🚀 Key Features
 
----
+- **Freighter Wallet Integration**: Secure, non-custodial connection using the industry-standard Stellar wallet.
+- **On-Chain Persistence**: Tasks are stored in persistent Soroban storage, ensuring your todo list stays immutable.
+- **String Support**: Handles spaces, special characters, and long text natively using the Soroban `String` type.
+- **Optimistic UI**: Experience zero-latency task management—tasks appear instantly and sync in the background.
+- **Local Persistence**: Built with Dexie.js (IndexedDB) to keep your tasks loaded even when offline or during page refreshes.
+- **Sync & Recover**: Tooling to clear local cache and force-sync from the blockchain source of truth.
 
-## 🏗️ Architecture
+## 🛠️ Technology Stack
 
-```mermaid
-graph TD
-    User([User]) <--> Frontend[React Frontend]
-    Frontend <--> Freighter[Freighter Wallet]
-    Freighter <--> Stellar[Stellar Testnet]
-    Frontend <--> IndexedDB[(Local IndexedDB - Dexie)]
-    Stellar <--> Soroban[Soroban Contract]
+- **Smart Contracts**: Rust / Soroban
+- **Frontend**: React / Vite / TypeScript
+- **Styling**: Tailwind CSS / Lucide Icons / Framer Motion
+- **Wallet**: Freighter API
+- **Blockchain**: Stellar Testnet
+- **Database**: Dexie.js (IndexedDB)
 
-    subgraph "Soroban Logic (Rust)"
-        Soroban -- "Persistent" --> tasks[Task Storage]
-    end
+## 🌐 On-Chain Details
 
-    subgraph "Frontend Engine"
-        Frontend -- "Build TX" --> SDK[Stellar SDK]
-        SDK -- "Sign" --> Freighter
-    end
-```
+- **Contract ID**: `CDNW5EACVDOS3QVSGP76GHCDAOSN7JQW7UYP4ER2VDFGKWXKMN24DO5T`
+- **Network**: Stellar Testnet
+- **Explorer**: [View Project on Stellar Expert](https://stellar.expert/explorer/testnet/contract/CDNW5EACVDOS3QVSGP76GHCDAOSN7JQW7UYP4ER2VDFGKWXKMN24DO5T)
 
----
+## 📸 Screenshots
 
-## 🛠️ Tech Stack
-- **Smart Contracts**: Soroban (Rust SDK)
-- **Frontend**: React 19, Vite, TypeScript
-- **Styling**: Tailwind CSS, Framer Motion
-- **Blockchain SDK**: `@stellar/stellar-sdk`
-- **Wallet API**: `@stellar/freighter-api`
-- **Local Storage**: Dexie.js (IndexedDB)
+### Wallet Connection
+![Wallet Gate](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585867177.png)
 
----
+### Real-Time Syncing
+![Syncing](/Users/parthkaran/.gemini/antigravity/brain/42d8b30d-a429-48fb-b58c-89055eb8a35b/media__1776585524480.png)
 
-## 🚀 Getting Started
+## 📦 Getting Started
 
 ### Prerequisites
-- [Stellar (Soroban) CLI](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup)
-- [Freighter Wallet](https://www.freighter.app/) Browser Extension
-- Rust & Cargo installed
 
-### Contract Setup
-1. Navigate to `/contracts/todo`:
-   ```bash
-   stellar contract init todo
-   ```
-2. Build the contract:
-   ```bash
-   cargo build --target wasm32v1-none --release
-   ```
+- [Freighter Wallet Extension](https://www.freighter.app/)
+- [Node.js v18+](https://nodejs.org/)
+- [Stellar CLI](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup)
 
 ### Frontend Setup
-1. Navigate to `/frontend`:
+
+1. Navigate to the frontend directory:
    ```bash
-   npm install --legacy-peer-deps
+   cd frontend
    ```
-2. Update the `CONTRACT_ID` in `src/hooks/useTasks.ts`.
-3. Start development:
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
    ```bash
    npm run dev
    ```
 
----
+### Smart Contract Build (Optional)
 
-## 🧪 Testing Results
-The Soroban contract logic was verified through local unit tests:
-- `add_task`: Correctly increments counter and pushes to Vec.
-- `toggle_task`: Modifies existing task status.
-- `delete_task`: Filters out target task by ID.
-- `get_tasks`: Retrieves full list for specific address.
+1. Navigate to the contract directory:
+   ```bash
+   cd contracts/todo
+   ```
+2. Build the contract:
+   ```bash
+   stellar contract build
+   ```
 
----
+## 📄 License
 
-## 🔗 Project Links
-- **Contract ID**: `C...` (Placeholder)
-- **Network**: Stellar Testnet
-- **Wallet Support**: Freighter Only
+This project is licensed under the Apache-2.0 License.

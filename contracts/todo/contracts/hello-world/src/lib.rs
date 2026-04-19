@@ -1,11 +1,11 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, Env, Symbol, Vec, Address, symbol_short};
+use soroban_sdk::{contract, contractimpl, contracttype, Env, String, Vec, Address};
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Task {
     pub id: u32,
-    pub content: Symbol,
+    pub content: String,
     pub completed: bool,
 }
 
@@ -21,7 +21,7 @@ pub struct TaskManager;
 #[contractimpl]
 impl TaskManager {
     /// Adds a new task for the caller.
-    pub fn add_task(env: Env, owner: Address, content: Symbol) -> u32 {
+    pub fn add_task(env: Env, owner: Address, content: String) -> u32 {
         owner.require_auth();
 
         let mut tasks: Vec<Task> = env.storage().persistent().get(&DataKey::Tasks(owner.clone())).unwrap_or(Vec::new(&env));
