@@ -4,7 +4,7 @@ ChainTasks is a premium, personal on-chain todo list where tasks are stored immu
 
 ## 📺 Project Demo
 
-https://github.com/saasflare-online/chaintasks/assets/demo.mov
+[Watch the Video Demo](assets/demo.mov)
 
 ![Main Dashboard](assets/dashboard.png)
 
