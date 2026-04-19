@@ -83,3 +83,66 @@ impl TaskManager {
         env.storage().persistent().get(&DataKey::Tasks(owner)).unwrap_or(Vec::new(&env))
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use soroban_sdk::testutils::Address as _;
+    use soroban_sdk::{Env, String};
+
+    #[test]
+    fn test_add_and_get_tasks() {
+        let env = Env::default();
+        let contract_id = env.register(TaskManager, ());
+        let client = TaskManagerClient::new(&env, &contract_id);
+
+        let owner = Address::generate(&env);
+        env.mock_all_auths();
+
+        let content = String::from_str(&env, "Test task");
+        client.add_task(&owner, &content);
+
+        let tasks = client.get_tasks(&owner);
+        assert_eq!(tasks.len(), 1);
+        assert_eq!(tasks.get(0).unwrap().content, content);
+    }
+
+    #[test]
+    fn test_toggle_task() {
+        let env = Env::default();
+        let contract_id = env.register(TaskManager, ());
+        let client = TaskManagerClient::new(&env, &contract_id);
+
+        let owner = Address::generate(&env);
+        env.mock_all_auths();
+
+        client.add_task(&owner, &String::from_str(&env, "Task to toggle"));
+        client.toggle_task(&owner, &0);
+
+        let tasks = client.get_tasks(&owner);
+        assert_eq!(tasks.get(0).unwrap().completed, true);
+
+        client.toggle_task(&owner, &0);
+        assert_eq!(client.get_tasks(&owner).get(0).unwrap().completed, false);
+    }
+
+    #[test]
+    fn test_delete_task() {
+        let env = Env::default();
+        let contract_id = env.register(TaskManager, ());
+        let client = TaskManagerClient::new(&env, &contract_id);
+
+        let owner = Address::generate(&env);
+        env.mock_all_auths();
+
+        client.add_task(&owner, &String::from_str(&env, "Task 1"));
+        client.add_task(&owner, &String::from_str(&env, "Task 2"));
+        
+        assert_eq!(client.get_tasks(&owner).len(), 2);
+
+        client.delete_task(&owner, &0);
+        let tasks = client.get_tasks(&owner);
+        assert_eq!(tasks.len(), 1);
+        assert_eq!(tasks.get(0).unwrap().id, 1);
+    }
+}
