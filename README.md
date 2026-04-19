@@ -2,9 +2,15 @@
 
 ChainTasks is a premium, personal on-chain todo list where tasks are stored immutably on the Stellar blockchain. Built with Rust-based Soroban smart contracts and a sleek, modern React frontend, it offers a seamless Web3 experience with optimistic UI updates and persistent offline caching.
 
+## 📱 Live Demo
+
+**[Deployed on Vercel](https://chaintasks.vercel.app/)**
+
 ## 📺 Project Demo
 
-[Watch the Video Demo](assets/demo.mov)
+**[Watch the Official Walkthrough (YouTube)](https://youtu.be/lW3i03e_QCw)**
+
+[Download/Watch Raw Video Demo](assets/demo.mov)
 
 ![Main Dashboard](assets/dashboard.png)
 
