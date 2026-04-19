@@ -1,0 +1,85 @@
+#![no_std]
+use soroban_sdk::{contract, contractimpl, contracttype, Env, Symbol, Vec, Address, symbol_short};
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Task {
+    pub id: u32,
+    pub content: Symbol,
+    pub completed: bool,
+}
+
+#[contracttype]
+pub enum DataKey {
+    Tasks(Address),
+    Counter(Address),
+}
+
+#[contract]
+pub struct TaskManager;
+
+#[contractimpl]
+impl TaskManager {
+    /// Adds a new task for the caller.
+    pub fn add_task(env: Env, owner: Address, content: Symbol) -> u32 {
+        owner.require_auth();
+
+        let mut tasks: Vec<Task> = env.storage().persistent().get(&DataKey::Tasks(owner.clone())).unwrap_or(Vec::new(&env));
+        let mut counter: u32 = env.storage().persistent().get(&DataKey::Counter(owner.clone())).unwrap_or(0);
+
+        let id = counter;
+        counter += 1;
+
+        let new_task = Task {
+            id,
+            content,
+            completed: false,
+        };
+
+        tasks.push_back(new_task);
+
+        env.storage().persistent().set(&DataKey::Tasks(owner.clone()), &tasks);
+        env.storage().persistent().set(&DataKey::Counter(owner.clone()), &counter);
+
+        id
+    }
+
+    /// Toggles task completion.
+    pub fn toggle_task(env: Env, owner: Address, id: u32) {
+        owner.require_auth();
+
+        let mut tasks: Vec<Task> = env.storage().persistent().get(&DataKey::Tasks(owner.clone())).unwrap_or(Vec::new(&env));
+        
+        for i in 0..tasks.len() {
+            let mut task = tasks.get(i).unwrap();
+            if task.id == id {
+                task.completed = !task.completed;
+                tasks.set(i, task);
+                break;
+            }
+        }
+
+        env.storage().persistent().set(&DataKey::Tasks(owner.clone()), &tasks);
+    }
+
+    /// Deletes a task.
+    pub fn delete_task(env: Env, owner: Address, id: u32) {
+        owner.require_auth();
+
+        let tasks: Vec<Task> = env.storage().persistent().get(&DataKey::Tasks(owner.clone())).unwrap_or(Vec::new(&env));
+        let mut new_tasks: Vec<Task> = Vec::new(&env);
+
+        for task in tasks.iter() {
+            if task.id != id {
+                new_tasks.push_back(task);
+            }
+        }
+
+        env.storage().persistent().set(&DataKey::Tasks(owner.clone()), &new_tasks);
+    }
+
+    /// Returns all tasks for an address.
+    pub fn get_tasks(env: Env, owner: Address) -> Vec<Task> {
+        env.storage().persistent().get(&DataKey::Tasks(owner)).unwrap_or(Vec::new(&env))
+    }
+}

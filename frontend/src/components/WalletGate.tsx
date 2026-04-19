@@ -1,9 +1,8 @@
-import { useAccount } from 'wagmi';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useStellar } from '../providers/StellarProvider';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function WalletGate({ children }: { children: React.ReactNode }) {
-  const { isConnected } = useAccount();
+  const { isConnected, connect } = useStellar();
 
   return (
     <div className="relative min-h-screen">
@@ -19,12 +18,17 @@ export function WalletGate({ children }: { children: React.ReactNode }) {
               <div className="w-20 h-20 bg-primary/20 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-primary/30 rotate-12">
                  <span className="text-4xl text-primary font-bold -rotate-12">CT</span>
               </div>
-              <h1 className="text-4xl font-bold tracking-tight text-white">Welcome to ChainTasks</h1>
+              <h1 className="text-4xl font-bold tracking-tight text-white">ChainTasks x Stellar</h1>
               <p className="text-slate-400 text-lg">
-                Your personal, immutable todo list on the blockchain. Connect your wallet to start managing tasks.
+                Personal, immutable todo list on Soroban. Connect your **Freighter** wallet to start.
               </p>
               <div className="flex justify-center pt-4">
-                <ConnectButton label="Connect to Enter" />
+                <button 
+                    onClick={connect}
+                    className="btn-primary"
+                >
+                    Connect Freighter
+                </button>
               </div>
             </div>
           </motion.div>

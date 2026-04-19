@@ -1,16 +1,17 @@
 import { useState } from 'react';
 import { useTasks } from './hooks/useTasks';
+import { useStellar } from './providers/StellarProvider';
 import { WalletGate } from './components/WalletGate';
 import { TaskItem } from './components/TaskItem';
 import { ProgressIndicator, EmptyState } from './components/Feedback';
 import { ConfirmDeleteModal } from './components/ConfirmDeleteModal';
-import { Plus, Layout } from 'lucide-react';
+import { Plus, Layout, LogOut } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
-import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 function TaskApp() {
   const [newContent, setNewContent] = useState('');
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const { address, disconnect } = useStellar();
   const { tasks, addTask, toggleTask, deleteTask, pendingCount, isLoading } = useTasks();
 
   const activeTask = tasks.find(t => t.id === deletingId);
@@ -28,6 +29,9 @@ function TaskApp() {
     }
   };
 
+  const truncateAddress = (addr: string) => 
+    `${addr.slice(0, 4)}...${addr.slice(-4)}`;
+
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
       {/* Header */}
@@ -40,7 +44,18 @@ function TaskApp() {
             ChainTasks
           </h1>
         </div>
-        <ConnectButton showBalance={false} chainStatus="none" accountStatus="avatar" />
+        
+        <div className="flex items-center gap-4">
+            <div className="px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-sm font-mono text-slate-400">
+                {address ? truncateAddress(address) : 'Not Connected'}
+            </div>
+            <button 
+                onClick={disconnect}
+                className="p-2 text-slate-500 hover:text-white hover:bg-slate-800 rounded-lg transition-all"
+            >
+                <LogOut className="w-5 h-5" />
+            </button>
+        </div>
       </header>
 
       {/* Input Section */}
@@ -50,7 +65,7 @@ function TaskApp() {
             type="text"
             value={newContent}
             onChange={(e) => setNewContent(e.target.value)}
-            placeholder="Add a new on-chain task..."
+            placeholder="Add a new Soroban task..."
             className="flex-1 bg-transparent border-none outline-none py-3 px-4 text-lg text-white placeholder:text-slate-500"
           />
           <button 

@@ -1,16 +1,16 @@
-# 🚀 ChainTasks: Personal On-Chain Todo List
+# 🚀 ChainTasks x Stellar (Soroban)
 
-ChainTasks is a premium, end-to-end decentralized application (dApp) that allows users to manage their daily tasks with the immutability and transparency of the Ethereum blockchain. Built for the modern web, it combines high-performance caching with real-time blockchain synchronization.
+ChainTasks is a premium, personal todo list where tasks are stored immutably on the **Stellar Network** using **Soroban** smart contracts. Optimized for speed with IndexedDB and integrated with the **Freighter Wallet**.
 
 ## 🔴 The Problem
-Traditional todo lists are stored on centralized servers. Your data is owned by companies, susceptible to downtime, and lacks true permanence. There is no proof of completion beyond a simple database entry that can be modified or deleted without a trace.
+Traditional todo lists are fragile and centralized. They lack true ownership and permanent history.
 
 ## 🟢 The Solution
-**ChainTasks** shifts the paradigm by storing your tasks directly on the blockchain.
-- **Immutability**: Once a task is added, it exists forever on-chain (until you delete it).
-- **Ownership**: You own your tasks. No central authority can access or modify your personal task list.
-- **Privacy**: Tasks are mapped to your wallet address. only you can view and manage your specific items.
-- **Speed**: Optimized with **IndexedDB (Dexie.js)** for instant loading, providing a seamless "Web2" speed with "Web3" security.
+**ChainTasks** leverage Stellar's efficient smart contract platform (Soroban) to provide:
+- **Immutability**: Tasks are stored on Stellar Testnet permanently.
+- **Ownership**: Your tasks are tied to your Stellar Public Key.
+- **Performance**: Instant UI updates via **Dexie.js** caching.
+- **Low Cost**: Ultra-low transaction fees on the Stellar network.
 
 ---
 
@@ -18,55 +18,49 @@ Traditional todo lists are stored on centralized servers. Your data is owned by 
 
 ```mermaid
 graph TD
-    User([User]) <--> Frontend[React + Vite Frontend]
-    Frontend <--> Wallet[Browser Wallet / Metamask]
-    Wallet <--> Blockchain[Ethereum Sepolia Testnet]
+    User([User]) <--> Frontend[React Frontend]
+    Frontend <--> Freighter[Freighter Wallet]
+    Freighter <--> Stellar[Stellar Testnet]
     Frontend <--> IndexedDB[(Local IndexedDB - Dexie)]
-    Blockchain <--> Contract[TaskManager Smart Contract]
+    Stellar <--> Soroban[Soroban Contract]
 
-    subgraph "Smart Contract Logic"
-        Contract -- "Store" --> tasks[Task Storage]
-        Contract -- "Emit" --> events[TaskAdded / Toggled Events]
+    subgraph "Soroban Logic (Rust)"
+        Soroban -- "Persistent" --> tasks[Task Storage]
     end
 
-    subgraph "Frontend Layer"
-        Frontend -- "Optimistic UI" --> UI[Fast State Updates]
-        Frontend -- "Reconciler" --> Sync[Blockchain Sync Engine]
+    subgraph "Frontend Engine"
+        Frontend -- "Build TX" --> SDK[Stellar SDK]
+        SDK -- "Sign" --> Freighter
     end
 ```
 
 ---
 
 ## 🛠️ Tech Stack
-- **Smart Contracts**: Solidity ^0.8.20, Hardhat
+- **Smart Contracts**: Soroban (Rust SDK)
 - **Frontend**: React 19, Vite, TypeScript
-- **Styling**: Tailwind CSS (Premium Dark Theme), Framer Motion
-- **Web3 Interaction**: Wagmi v2, Viem, Ethers.js v6
-- **Wallet UI**: RainbowKit
-- **Caching**: Dexie.js (IndexedDB)
+- **Styling**: Tailwind CSS, Framer Motion
+- **Blockchain SDK**: `@stellar/stellar-sdk`
+- **Wallet API**: `@stellar/freighter-api`
+- **Local Storage**: Dexie.js (IndexedDB)
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js v20+
-- A Browser Wallet (e.g., MetaMask)
-- Sepolia Testnet ETH
+- [Stellar (Soroban) CLI](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup)
+- [Freighter Wallet](https://www.freighter.app/) Browser Extension
+- Rust & Cargo installed
 
-### Blockchain Setup
-1. Navigate to `/blockchain`:
+### Contract Setup
+1. Navigate to `/contracts/todo`:
    ```bash
-   npm install
+   stellar contract init todo
    ```
-2. Create a `.env` file:
-   ```env
-   SEPOLIA_RPC_URL=your_rpc_url
-   PRIVATE_KEY=your_private_key
-   ```
-3. Deploy the contract:
+2. Build the contract:
    ```bash
-   npx hardhat run scripts/deploy.ts --network sepolia
+   cargo build --target wasm32v1-none --release
    ```
 
 ### Frontend Setup
@@ -74,8 +68,8 @@ graph TD
    ```bash
    npm install --legacy-peer-deps
    ```
-2. Update the contract address in `src/hooks/useTasks.ts`.
-3. Start the development server:
+2. Update the `CONTRACT_ID` in `src/hooks/useTasks.ts`.
+3. Start development:
    ```bash
    npm run dev
    ```
@@ -83,15 +77,15 @@ graph TD
 ---
 
 ## 🧪 Testing Results
-The smart contract has been verified with 4 core tests ensuring security and logic integrity:
-- `addTask`: Verified event emission and storage.
-- `toggleTaskComplete`: Verified state transitions.
-- `deleteTask`: Verified removal from user mapping.
-- `Privacy Check`: Verified that only owners can access/modify their tasks.
+The Soroban contract logic was verified through local unit tests:
+- `add_task`: Correctly increments counter and pushes to Vec.
+- `toggle_task`: Modifies existing task status.
+- `delete_task`: Filters out target task by ID.
+- `get_tasks`: Retrieves full list for specific address.
 
 ---
 
 ## 🔗 Project Links
-- **Contract Address**: `0x1Fd396014457F2429a320399Ac0E927014603B6F` (Mock/Placeholder)
-- **Etherscan**: [View on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x1Fd396014457F2429a320399Ac0E927014603B6F)
-- **Live Demo**: [ChainTasks on Vercel](https://chaintasks-demo.vercel.app)
+- **Contract ID**: `C...` (Placeholder)
+- **Network**: Stellar Testnet
+- **Wallet Support**: Freighter Only
