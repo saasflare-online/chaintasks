@@ -73,6 +73,9 @@ export function useTasks() {
   const addTask = async (content: string) => {
     if (!address || !CONTRACT_ID) return;
 
+    // Clear any existing stale ghost tasks before adding a new one
+    await clearPending();
+
     const tempId = Math.floor(Date.now() / 1000);
     
     // Optimistic Update
@@ -137,6 +140,10 @@ export function useTasks() {
 
       // 7. Force refetch to sync
       await fetchOnChainTasks();
+      
+      // 8. Remove the optimistic temporary task as it's now replaced by the on-chain one
+      await db.tasks.where('id').equals(tempId).delete();
+      
       return txResponse;
     } catch (error) {
       console.error('Task action failed:', error);
